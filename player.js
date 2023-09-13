@@ -1,18 +1,32 @@
+import { Falling, Jumping, Running, Sitting } from './playerStates.js';
+
 export default class Player {
   constructor(game) {
     this.game = game;
+    this.image = document.getElementById('player');
     this.width = 100;
     this.height = 91.3;
-    this.image = document.getElementById('player');
     this.x = 0;
     this.y = this.game.height - this.height;
     this.vx = 0;
     this.vy = 0;
     this.weight = 1;
     this.maxSpeed = 5;
-    this.jumpForce = 20;
+    this.jumpForce = 25;
+    this.frameX = 0;
+    this.frameY = 0;
+    this.maxFrame = 6;
+    this.states = [
+      new Sitting(this),
+      new Running(this),
+      new Jumping(this),
+      new Falling(this),
+    ];
+    this.currentState = this.states[0];
+    this.currentState.enter();
   }
   update(input) {
+    this.currentState.inputHandler(input);
     // Horizontal movement
     this.x += this.vx;
     if (input.includes('ArrowRight')) this.vx = this.maxSpeed;
@@ -24,11 +38,7 @@ export default class Player {
     if (this.x >= this.game.width - this.width)
       this.x = this.game.width - this.width;
 
-    // Vertical Movement
     this.y += this.vy;
-    if (input.includes('ArrowUp') && this.onGround()) {
-      this.vy = -this.jumpForce;
-    }
     this.vy += this.weight;
 
     // Vertical boundary
@@ -42,11 +52,15 @@ export default class Player {
   onGround() {
     return this.y >= this.game.height - this.height;
   }
+  setState(state) {
+    this.currentState = this.states[state];
+    this.currentState.enter();
+  }
   draw(ctx) {
     ctx.drawImage(
       this.image,
-      0,
-      0,
+      this.frameX * this.width,
+      this.frameY * this.height,
       this.width,
       this.height,
       this.x,
