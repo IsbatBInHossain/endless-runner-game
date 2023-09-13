@@ -7,7 +7,8 @@ export default class Player {
     this.width = 100;
     this.height = 91.3;
     this.x = 0;
-    this.y = this.game.height - this.height;
+    this.ground = this.game.height - this.height - this.game.groundMargin;
+    this.y = this.ground;
     this.vx = 0;
     this.vy = 0;
     this.weight = 1;
@@ -46,8 +47,8 @@ export default class Player {
 
     // Vertical boundary
     if (this.y < 0) this.y = 0;
-    if (this.y >= this.game.height - this.height) {
-      this.y = this.game.height - this.height;
+    if (this.y >= this.ground) {
+      this.y = this.ground;
       this.vy = 0;
     }
 
@@ -61,7 +62,7 @@ export default class Player {
   }
 
   onGround() {
-    return this.y >= this.game.height - this.height;
+    return this.y >= this.ground;
   }
   setState(state) {
     this.currentState = this.states[state];
