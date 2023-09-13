@@ -15,7 +15,10 @@ export default class Player {
     this.jumpForce = 25;
     this.frameX = 0;
     this.frameY = 0;
-    this.maxFrame = 6;
+    this.maxFrame = 4;
+    this.fps = 20;
+    this.timer = 0;
+    this.frameInterval = 1000 / this.fps;
     this.states = [
       new Sitting(this),
       new Running(this),
@@ -25,7 +28,7 @@ export default class Player {
     this.currentState = this.states[0];
     this.currentState.enter();
   }
-  update(input) {
+  update(input, deltatime) {
     this.currentState.inputHandler(input);
     // Horizontal movement
     this.x += this.vx;
@@ -47,6 +50,14 @@ export default class Player {
       this.y = this.game.height - this.height;
       this.vy = 0;
     }
+
+    // Sprite animation
+    if (this.timer > this.frameInterval) {
+      if (this.frameX < this.maxFrame) {
+        this.frameX++;
+      } else this.frameX = 0;
+      this.timer = 0;
+    } else this.timer += deltatime;
   }
 
   onGround() {

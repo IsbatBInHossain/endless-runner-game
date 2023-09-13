@@ -14,19 +14,24 @@ window.addEventListener('load', () => {
       this.player = new Player(this);
       this.input = new InputHandler();
     }
-    update() {
-      this.player.update(this.input.keys);
+    update(deltatime) {
+      this.player.update(this.input.keys, deltatime);
     }
     draw(context) {
       this.player.draw(context);
     }
   }
+
   const game = new Game(canvas.width, canvas.height);
-  const animate = () => {
+  let lastTime = 0;
+
+  const animate = timestamp => {
+    const deltatime = timestamp - lastTime;
+    lastTime = timestamp;
     context.clearRect(0, 0, canvas.width, canvas.height);
     game.draw(context);
-    game.update();
+    game.update(deltatime);
     requestAnimationFrame(animate);
   };
-  animate();
+  animate(0);
 });
