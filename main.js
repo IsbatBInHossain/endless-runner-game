@@ -1,6 +1,7 @@
 import Player from './player.js'
 import InputHandler from './input.js'
 import Background from './background.js'
+import { FlyingEnemies } from './Enemy.js'
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById('canvas1')
@@ -18,6 +19,7 @@ window.addEventListener('load', () => {
       this.background = new Background(this)
       this.speed = 0
       this.maxSpeed = 3
+      this.enemies = []
     }
     update(deltatime) {
       this.background.update()
@@ -26,6 +28,9 @@ window.addEventListener('load', () => {
     draw(context) {
       this.background.draw(context)
       this.player.draw(context)
+    }
+    addEnemy() {
+      this.enemies.push(new FlyingEnemies(this))
     }
   }
 
