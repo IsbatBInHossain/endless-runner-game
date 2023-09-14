@@ -30,6 +30,7 @@ export default class Player {
     this.currentState.enter()
   }
   update(input, deltatime) {
+    this.checkCollision()
     this.currentState.inputHandler(input)
     // Horizontal movement
     this.x += this.vx
@@ -61,14 +62,6 @@ export default class Player {
     } else this.timer += deltatime
   }
 
-  onGround() {
-    return this.y >= this.ground
-  }
-  setState(state, speed) {
-    this.currentState = this.states[state]
-    this.game.speed = this.game.maxSpeed * speed
-    this.currentState.enter()
-  }
   draw(ctx) {
     if (this.game.debug) {
       ctx.save()
@@ -87,5 +80,31 @@ export default class Player {
       this.width,
       this.height
     )
+  }
+
+  onGround() {
+    return this.y >= this.ground
+  }
+
+  setState(state, speed) {
+    this.currentState = this.states[state]
+    this.game.speed = this.game.maxSpeed * speed
+    this.currentState.enter()
+  }
+
+  checkCollision() {
+    this.game.enemies.forEach(enemy => {
+      if (
+        enemy.x < this.x + this.width &&
+        this.x < enemy.x + enemy.width &&
+        enemy.y < this.y + this.height &&
+        this.y < enemy.y + enemy.height
+      ) {
+        enemy.markedForDeletion = true
+        this.game.score++
+      } else {
+        // no collision
+      }
+    })
   }
 }

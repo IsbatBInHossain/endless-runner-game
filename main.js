@@ -2,6 +2,7 @@ import Player from './player.js'
 import InputHandler from './input.js'
 import Background from './background.js'
 import { ClimbingEnemies, FlyingEnemies, GroundEnemies } from './Enemy.js'
+import UI from './UI.js'
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById('canvas1')
@@ -17,12 +18,15 @@ window.addEventListener('load', () => {
       this.player = new Player(this)
       this.input = new InputHandler(this)
       this.background = new Background(this)
+      this.UI = new UI(this)
       this.speed = 0
       this.maxSpeed = 3
       this.enemies = []
       this.enemyTimer = 0
       this.enemyInterval = 1000
       this.debug = false
+      this.score = 0
+      this.fontColor = 'black'
     }
     update(deltatime) {
       this.background.update()
@@ -37,6 +41,7 @@ window.addEventListener('load', () => {
     }
     draw(context) {
       this.background.draw(context)
+      this.UI.draw(context)
       this.player.draw(context)
       this.enemies.forEach(enemy => enemy.draw(context))
     }
