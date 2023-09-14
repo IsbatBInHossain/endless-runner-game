@@ -20,17 +20,28 @@ window.addEventListener('load', () => {
       this.speed = 0
       this.maxSpeed = 3
       this.enemies = []
+      this.enemyTimer = 0
+      this.enemyInterval = 1000
     }
     update(deltatime) {
       this.background.update()
       this.player.update(this.input.keys, deltatime)
+      if (this.enemyTimer > this.enemyInterval) {
+        this.enemyTimer = 0
+        this.addEnemy()
+      } else this.enemyTimer += deltatime
+
+      this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion)
+      this.enemies.forEach(enemy => enemy.update(deltatime))
     }
     draw(context) {
       this.background.draw(context)
       this.player.draw(context)
+      this.enemies.forEach(enemy => enemy.draw(context))
     }
     addEnemy() {
       this.enemies.push(new FlyingEnemies(this))
+      console.log(this.enemies)
     }
   }
 

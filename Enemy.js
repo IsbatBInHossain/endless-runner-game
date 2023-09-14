@@ -4,10 +4,11 @@ class Enemy {
     this.fps = 20
     this.frameInterval = 1000 / this.fps
     this.timer = 0
+    this.markedForDeletion = false
   }
   update(deltatime) {
     // Movement
-    this.x += this.speedX
+    this.x -= this.speedX + this.game.speed
     this.y += this.speedY
 
     // Animation
@@ -16,6 +17,9 @@ class Enemy {
       if (this.frameX >= this.maxFrame) this.frameX = 0
       else this.frameX++
     } else this.timer += deltatime
+
+    // Delete Enemies
+    if (this.x < -this.width) this.markedForDeletion = true
   }
   draw(ctx) {
     ctx.drawImage(
@@ -39,14 +43,19 @@ export class FlyingEnemies extends Enemy {
     this.image = document.getElementById('fly')
     this.width = 60
     this.height = 44
-    this.x = 200
-    this.y = 200
+    this.x = this.game.width + Math.random() * this.game.height * 0.5
+    this.y = Math.random() * this.game.height * 0.5
     this.speedX = 2
-    this.speedY = 2
+    this.speedY = 0
     this.maxFrame = 5
+    this.angle = 0
+    this.amplitude = Math.random() * 2 + 1
+    this.vw = Math.random() * 0.1 + 0.1
   }
   update(deltatime) {
     super.update(deltatime)
+    this.angle += this.vw
+    this.y += this.amplitude * Math.sin(this.angle)
   }
 }
 export class GroundEnemies extends Enemy {
