@@ -70,6 +70,12 @@ export default class Player {
     this.currentState.enter()
   }
   draw(ctx) {
+    if (this.game.debug) {
+      ctx.save()
+      ctx.strokeStyle = 'blue'
+      ctx.strokeRect(this.x, this.y, this.width, this.height)
+      ctx.restore()
+    }
     ctx.drawImage(
       this.image,
       this.frameX * this.width,

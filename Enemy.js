@@ -22,6 +22,12 @@ class Enemy {
     if (this.x < -this.width) this.markedForDeletion = true
   }
   draw(ctx) {
+    if (this.game.debug) {
+      ctx.save()
+      ctx.strokeStyle = 'red'
+      ctx.strokeRect(this.x, this.y, this.width, this.height)
+      ctx.restore()
+    }
     ctx.drawImage(
       this.image,
       this.width * this.frameX,

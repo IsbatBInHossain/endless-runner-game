@@ -15,13 +15,14 @@ window.addEventListener('load', () => {
       this.height = height
       this.groundMargin = 80
       this.player = new Player(this)
-      this.input = new InputHandler()
+      this.input = new InputHandler(this)
       this.background = new Background(this)
       this.speed = 0
       this.maxSpeed = 3
       this.enemies = []
       this.enemyTimer = 0
       this.enemyInterval = 1000
+      this.debug = false
     }
     update(deltatime) {
       this.background.update()
@@ -44,7 +45,6 @@ window.addEventListener('load', () => {
       if (this.speed > 0 && Math.random() > 0.5)
         this.enemies.push(new GroundEnemies(this))
       else if (this.speed > 0) this.enemies.push(new ClimbingEnemies(this))
-      console.log(this.enemies)
     }
   }
 
