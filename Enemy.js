@@ -43,7 +43,7 @@ export class FlyingEnemies extends Enemy {
     this.image = document.getElementById('fly')
     this.width = 60
     this.height = 44
-    this.x = this.game.width + Math.random() * this.game.height * 0.5
+    this.x = this.game.width + Math.random() * this.game.width * 0.5
     this.y = Math.random() * this.game.height * 0.5
     this.speedX = 2
     this.speedY = 0
@@ -65,6 +65,10 @@ export class GroundEnemies extends Enemy {
     this.image = document.getElementById('plant')
     this.width = 60
     this.height = 87
+    this.x = this.game.width
+    this.y = this.game.height - this.game.groundMargin - this.height
+    this.speedX = 0
+    this.speedY = 0
     this.maxFrame = 1
   }
 }
@@ -75,9 +79,23 @@ export class ClimbingEnemies extends Enemy {
     this.image = document.getElementById('spider-big')
     this.width = 120
     this.height = 144
+    this.x = this.game.width
+    this.y = Math.random() * this.game.height * 0.5
+    this.speedX = 0
+    this.speedY = Math.random() > 0.45 ? 1 : -1
     this.maxFrame = 5
   }
   update(deltatime) {
     super.update(deltatime)
+    if (this.y > this.game.height - this.game.groundMargin - this.height)
+      this.speedY = -1
+    if (this.y < -this.height) this.markedForDeletion = true
+  }
+  draw(ctx) {
+    super.draw(ctx)
+    ctx.beginPath()
+    ctx.moveTo(this.x + this.width * 0.5, 0)
+    ctx.lineTo(this.x + this.width * 0.5, this.y + 50)
+    ctx.stroke()
   }
 }

@@ -1,7 +1,7 @@
 import Player from './player.js'
 import InputHandler from './input.js'
 import Background from './background.js'
-import { FlyingEnemies } from './Enemy.js'
+import { ClimbingEnemies, FlyingEnemies, GroundEnemies } from './Enemy.js'
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById('canvas1')
@@ -41,6 +41,9 @@ window.addEventListener('load', () => {
     }
     addEnemy() {
       this.enemies.push(new FlyingEnemies(this))
+      if (this.speed > 0 && Math.random() > 0.5)
+        this.enemies.push(new GroundEnemies(this))
+      else if (this.speed > 0) this.enemies.push(new ClimbingEnemies(this))
       console.log(this.enemies)
     }
   }
