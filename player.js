@@ -1,4 +1,4 @@
-import { Falling, Jumping, Running, Sitting } from './playerStates.js'
+import { Falling, Jumping, Rolling, Running, Sitting } from './playerStates.js'
 
 export default class Player {
   constructor(game) {
@@ -21,13 +21,12 @@ export default class Player {
     this.timer = 0
     this.frameInterval = 1000 / this.fps
     this.states = [
-      new Sitting(this),
-      new Running(this),
-      new Jumping(this),
-      new Falling(this),
+      new Sitting(this.game),
+      new Running(this.game),
+      new Jumping(this.game),
+      new Falling(this.game),
+      new Rolling(this.game),
     ]
-    this.currentState = this.states[0]
-    this.currentState.enter()
   }
   update(input, deltatime) {
     this.checkCollision()
@@ -102,8 +101,6 @@ export default class Player {
       ) {
         enemy.markedForDeletion = true
         this.game.score++
-      } else {
-        // no collision
       }
     })
   }

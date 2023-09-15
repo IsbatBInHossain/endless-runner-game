@@ -22,15 +22,20 @@ window.addEventListener('load', () => {
       this.speed = 0
       this.maxSpeed = 3
       this.enemies = []
+      this.particles = []
       this.enemyTimer = 0
       this.enemyInterval = 1000
       this.debug = false
       this.score = 0
       this.fontColor = 'black'
+      this.player.currentState = this.player.states[0]
+      this.player.currentState.enter()
     }
     update(deltatime) {
       this.background.update()
       this.player.update(this.input.keys, deltatime)
+
+      // handle enemies
       if (this.enemyTimer > this.enemyInterval) {
         this.enemyTimer = 0
         this.addEnemy()
@@ -38,12 +43,19 @@ window.addEventListener('load', () => {
 
       this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion)
       this.enemies.forEach(enemy => enemy.update(deltatime))
+
+      //handle particles
+      this.particles.forEach((particle, index) => {
+        particle.update()
+        if (particle.markedForDeletion) this.particles.splice(index, 1)
+      })
     }
     draw(context) {
       this.background.draw(context)
-      this.UI.draw(context)
       this.player.draw(context)
       this.enemies.forEach(enemy => enemy.draw(context))
+      this.particles.forEach(particle => particle.draw(context))
+      this.UI.draw(context)
     }
     addEnemy() {
       this.enemies.push(new FlyingEnemies(this))
