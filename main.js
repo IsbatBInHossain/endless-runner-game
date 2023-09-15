@@ -24,6 +24,7 @@ window.addEventListener('load', () => {
       this.maxParticles = 50
       this.enemies = []
       this.particles = []
+      this.collisions = []
       this.enemyTimer = 0
       this.enemyInterval = 1000
       this.debug = false
@@ -55,12 +56,19 @@ window.addEventListener('load', () => {
           this.particles.length - this.maxParticles,
           this.particles.length
         )
+
+      // handle collision
+      this.collisions.forEach((collision, index) => {
+        collision.update(deltatime)
+        if (collision.markedForDeletion) this.collisions.splice(index, 1)
+      })
     }
     draw(context) {
       this.background.draw(context)
       this.player.draw(context)
       this.enemies.forEach(enemy => enemy.draw(context))
       this.particles.forEach(particle => particle.draw(context))
+      this.collisions.forEach(collision => collision.draw(context))
       this.UI.draw(context)
     }
     addEnemy() {
