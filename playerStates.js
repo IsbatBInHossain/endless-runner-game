@@ -1,4 +1,4 @@
-import { Dust } from './particle.js'
+import { Dust, Fire, Splash } from './particle.js'
 
 const states = {
   SITTING: 0,
@@ -6,6 +6,8 @@ const states = {
   JUMPING: 2,
   FALLING: 3,
   ROLLING: 4,
+  DIVING: 5,
+  HIT: 6,
 }
 
 class State {
@@ -42,7 +44,11 @@ export class Running extends State {
   }
   inputHandler(input) {
     this.game.particles.push(
-      new Dust(this.game, this.game.player.x, this.game.player.y)
+      new Dust(
+        this.game,
+        this.game.player.x + this.game.player.width * 0.5,
+        this.game.player.y + this.game.player.height + Math.random() * 5 - 5
+      )
     )
     if (input.includes('ArrowDown'))
       this.game.player.setState(states.SITTING, 0)
@@ -64,10 +70,12 @@ export class Jumping extends State {
     this.game.player.maxFrame = 6
   }
   inputHandler(input) {
-    if (this.game.player.vy > this.game.player.weight) {
+    if (this.game.player.vy > this.game.player.weight)
       this.game.player.setState(states.FALLING, 1)
-    } else if (input.includes('Enter'))
+    else if (input.includes('Enter'))
       this.game.player.setState(states.ROLLING, 2)
+    else if (input.includes('ArrowDown'))
+      this.game.player.setState(states.DIVING, 0)
   }
 }
 export class Falling extends State {
@@ -80,9 +88,10 @@ export class Falling extends State {
     this.game.player.maxFrame = 6
   }
   inputHandler(input) {
-    if (this.game.player.onGround()) {
+    if (this.game.player.onGround())
       this.game.player.setState(states.RUNNING, 1)
-    }
+    else if (input.includes('ArrowDown'))
+      this.game.player.setState(states.DIVING, 0)
   }
 }
 export class Rolling extends State {
@@ -95,16 +104,71 @@ export class Rolling extends State {
     this.game.player.maxFrame = 6
   }
   inputHandler(input) {
-    if (!input.includes('Enter') && this.game.player.onGround()) {
+    this.game.particles.push(
+      new Fire(
+        this.game,
+        this.game.player.x + this.game.player.width * 0.5,
+        this.game.player.y + this.game.player.height * 0.5
+      )
+    )
+    if (!input.includes('Enter') && this.game.player.onGround())
       this.game.player.setState(states.RUNNING, 1)
-    } else if (!input.includes('Enter') && !this.game.player.onGround()) {
+    else if (!input.includes('Enter') && !this.game.player.onGround())
       this.game.player.setState(states.FALLING, 1)
-    } else if (
+    else if (
       input.includes('Enter') &&
       input.includes('ArrowUp') &&
       this.game.player.onGround()
-    ) {
+    )
       this.game.player.vy -= this.game.player.jumpForce
+    else if (input.includes('ArrowDown') && !this.game.player.onGround())
+      this.game.player.setState(states.DIVING, 0)
+  }
+}
+export class Diving extends State {
+  constructor(game) {
+    super('DIVING', game)
+  }
+  enter() {
+    this.game.player.frameY = 6
+    this.game.player.frameX = 0
+    this.game.player.maxFrame = 6
+    this.game.player.vy = 20
+  }
+  inputHandler(input) {
+    this.game.particles.push(
+      new Fire(
+        this.game,
+        this.game.player.x + this.game.player.width * 0.5,
+        this.game.player.y + this.game.player.height * 0.5
+      )
+    )
+    if (this.game.player.onGround()) {
+      this.game.player.setState(states.RUNNING, 1)
+      for (let i = 0; i < 30; i++) {
+        this.game.particles.push(
+          new Splash(this.game, this.game.player.x, this.game.player.y)
+        )
+      }
+    } else if (input.includes('Enter') && this.game.player.onGround()) {
+      this.game.player.setState(states.ROLLING, 2)
+    }
+  }
+}
+export class Hit extends State {
+  constructor(game) {
+    super('HIT', game)
+  }
+  enter() {
+    this.game.player.frameY = 4
+    this.game.player.frameX = 0
+    this.game.player.maxFrame = 10
+  }
+  inputHandler(input) {
+    if (this.game.player.onGround() && this.game.player.frameX >= 10) {
+      this.game.player.setState(states.RUNNING, 1)
+    } else if (!this.game.player.onGround() && this.game.player.frameX >= 10) {
+      this.game.player.setState(states.FALLING, 1)
     }
   }
 }

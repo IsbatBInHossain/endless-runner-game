@@ -21,6 +21,7 @@ window.addEventListener('load', () => {
       this.UI = new UI(this)
       this.speed = 0
       this.maxSpeed = 3
+      this.maxParticles = 50
       this.enemies = []
       this.particles = []
       this.enemyTimer = 0
@@ -49,6 +50,11 @@ window.addEventListener('load', () => {
         particle.update()
         if (particle.markedForDeletion) this.particles.splice(index, 1)
       })
+      if (this.particles.length > this.maxParticles)
+        this.particles = this.particles.slice(
+          this.particles.length - this.maxParticles,
+          this.particles.length
+        )
     }
     draw(context) {
       this.background.draw(context)
