@@ -29,11 +29,16 @@ window.addEventListener('load', () => {
       this.enemyInterval = 1000
       this.debug = false
       this.score = 0
+      this.time = 0
+      this.maxTime = 10 * 1000
       this.fontColor = 'black'
       this.player.currentState = this.player.states[0]
       this.player.currentState.enter()
+      this.gameOver = false
     }
     update(deltatime) {
+      this.time += deltatime
+      if (this.time > this.maxTime) this.gameOver = true
       this.background.update()
       this.player.update(this.input.keys, deltatime)
 
@@ -52,10 +57,7 @@ window.addEventListener('load', () => {
         if (particle.markedForDeletion) this.particles.splice(index, 1)
       })
       if (this.particles.length > this.maxParticles)
-        this.particles = this.particles.slice(
-          this.particles.length - this.maxParticles,
-          this.particles.length
-        )
+        this.particles.length = this.maxParticles
 
       // handle collision
       this.collisions.forEach((collision, index) => {
@@ -86,9 +88,9 @@ window.addEventListener('load', () => {
     const deltatime = timestamp - lastTime
     lastTime = timestamp
     context.clearRect(0, 0, canvas.width, canvas.height)
-    game.draw(context)
     game.update(deltatime)
-    requestAnimationFrame(animate)
+    game.draw(context)
+    if (!game.gameOver) requestAnimationFrame(animate)
   }
   animate(0)
 })

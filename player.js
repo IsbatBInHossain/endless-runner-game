@@ -45,8 +45,10 @@ export default class Player {
     this.currentState.inputHandler(input)
     // Horizontal movement
     this.x += this.vx
-    if (input.includes('ArrowRight')) this.vx = this.maxSpeed
-    else if (input.includes('ArrowLeft')) this.vx = -this.maxSpeed
+    if (input.includes('ArrowRight') && this.currentState != this.states[6])
+      this.vx = this.maxSpeed
+    else if (input.includes('ArrowLeft') && this.currentState != this.states[6])
+      this.vx = -this.maxSpeed
     else this.vx = 0
 
     // Horizontal boundary
