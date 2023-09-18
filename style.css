@@ -6,6 +6,7 @@
 
 #canvas1 {
   border: 5px solid black;
+  font-family: 'Creepster', cursive;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -23,6 +24,7 @@
 #plant,
 #spider-big,
 #fire,
-#boom {
+#boom,
+#lives {
   display: none;
 }

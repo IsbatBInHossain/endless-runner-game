@@ -10,14 +10,27 @@ window.addEventListener('load', () => {
   canvas.width = 500
   canvas.height = 500
 
+  const settings = ['City', 'Forest']
+
   class Game {
-    constructor(width, height) {
+    constructor(width, height, setting) {
       this.width = width
       this.height = height
-      this.groundMargin = 80
+      this.setting = setting
+      switch (this.setting) {
+        case 'City':
+          this.groundMargin = 80
+          break
+        case 'Forest':
+          this.groundMargin = 40
+          break
+      }
       this.player = new Player(this)
       this.input = new InputHandler(this)
-      this.background = new Background(this)
+      this.background = new Background({
+        game: this,
+        setting: this.setting,
+      })
       this.UI = new UI(this)
       this.speed = 0
       this.maxSpeed = 3
@@ -30,8 +43,9 @@ window.addEventListener('load', () => {
       this.debug = false
       this.score = 0
       this.time = 0
+      this.lives = 5
       this.maxTime = 10 * 1000
-      this.fontColor = 'black'
+      this.fontColor = 'white'
       this.player.currentState = this.player.states[0]
       this.player.currentState.enter()
       this.gameOver = false
@@ -81,7 +95,7 @@ window.addEventListener('load', () => {
     }
   }
 
-  const game = new Game(canvas.width, canvas.height)
+  const game = new Game(canvas.width, canvas.height, settings[1])
   let lastTime = 0
 
   const animate = timestamp => {
