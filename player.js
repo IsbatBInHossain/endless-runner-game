@@ -9,6 +9,7 @@ import {
 } from './playerStates.js'
 
 import CollisionAnimation from './collisionAnimation.js'
+import FloatingMessage from './floatingMessages.js'
 
 export default class Player {
   constructor(game) {
@@ -26,6 +27,7 @@ export default class Player {
     this.jumpForce = 25
     this.frameX = 0
     this.frameY = 0
+    this.currentState = null
     this.maxFrame = 4
     this.fps = 20
     this.timer = 0
@@ -126,6 +128,9 @@ export default class Player {
           this.currentState === this.states[5]
         ) {
           this.game.score++
+          this.game.floatingMessages.push(
+            new FloatingMessage('+1', enemy.x, enemy.y, 120, 45)
+          )
         } else {
           this.setState(6, 0)
           this.game.lives--

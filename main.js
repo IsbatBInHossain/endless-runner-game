@@ -38,6 +38,7 @@ window.addEventListener('load', () => {
       this.enemies = []
       this.particles = []
       this.collisions = []
+      this.floatingMessages = []
       this.enemyTimer = 0
       this.enemyInterval = 1000
       this.debug = false
@@ -66,18 +67,27 @@ window.addEventListener('load', () => {
       this.enemies.forEach(enemy => enemy.update(deltatime))
 
       //handle particles
-      this.particles.forEach((particle, index) => {
-        particle.update()
-        if (particle.markedForDeletion) this.particles.splice(index, 1)
-      })
+      this.particles = this.particles.filter(
+        particle => !particle.markedForDeletion
+      )
+      this.particles.forEach(particle => particle.update())
       if (this.particles.length > this.maxParticles)
-        this.particles.length = this.maxParticles
+        this.particles = this.particles.slice(
+          this.particles.length - this.maxParticles,
+          this.particles.length
+        )
 
       // handle collision
-      this.collisions.forEach((collision, index) => {
-        collision.update(deltatime)
-        if (collision.markedForDeletion) this.collisions.splice(index, 1)
-      })
+      this.collisions = this.collisions.filter(
+        collision => !collision.markedForDeletion
+      )
+      this.collisions.forEach(collision => collision.update(deltatime))
+
+      // handle floatingMessages
+      this.floatingMessages = this.floatingMessages.filter(
+        message => !message.markedForDeletion
+      )
+      this.floatingMessages.forEach(message => message.update())
     }
     draw(context) {
       this.background.draw(context)
@@ -85,6 +95,7 @@ window.addEventListener('load', () => {
       this.enemies.forEach(enemy => enemy.draw(context))
       this.particles.forEach(particle => particle.draw(context))
       this.collisions.forEach(collision => collision.draw(context))
+      this.floatingMessages.forEach(message => message.draw(context))
       this.UI.draw(context)
     }
     addEnemy() {

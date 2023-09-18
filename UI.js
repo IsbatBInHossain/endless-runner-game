@@ -3,8 +3,8 @@ export default class UI {
     this.game = game
     this.fontSize = 30
     this.fontFamily = 'Creepster'
-    this.xShift = 3
-    this.yShift = 3
+    this.xShift = 2
+    this.yShift = 2
     this.compFontColor = 'black'
     this.livesImage = document.getElementById('lives')
   }
